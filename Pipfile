@@ -9,6 +9,7 @@ django = "==4.1"
 markdown = "*"
 django-filter = "*"
 yapf = "*"
+mysqlclient = "*"
 
 [dev-packages]
 

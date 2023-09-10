@@ -5,11 +5,15 @@ name = "pypi"
 
 [packages]
 djangorestframework = "*"
+django = "==4.1"
 markdown = "*"
 django-filter = "*"
-django = "==4.1"
+yapf = "*"
 
 [dev-packages]
 
 [requires]
 python_version = "3.10"
+
+[scripts]
+start = "python manage.py runserver"

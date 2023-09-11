@@ -10,6 +10,7 @@ markdown = "*"
 django-filter = "*"
 yapf = "*"
 mysqlclient = "*"
+djangorestframework-jsonapi = {extras = ["django-filter"], version = "*"}
 
 [dev-packages]
 

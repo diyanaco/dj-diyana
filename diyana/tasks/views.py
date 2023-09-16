@@ -3,9 +3,20 @@ from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
 from rest_framework import permissions
 
-from tasks.serializers import (UserSerializer, GroupSerializer, TaskSerializer,
-                               CodeSerializer, PrioritySerializer)
-from tasks.models import Task, Code, Priority
+from tasks.serializers import (
+    UserSerializer,
+    GroupSerializer,
+    TaskSerializer,
+    CodeSerializer,
+    PrioritySerializer,
+    ProjectSerializer,
+)
+from tasks.models import (
+    Task,
+    Code,
+    Priority,
+    Project,
+)
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -50,4 +61,13 @@ class PriorityViewSet(viewsets.ModelViewSet):
     """
     queryset = Priority.objects.all()
     serializer_class = PrioritySerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class ProjectViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows groups to be viewed or edited.
+    """
+    queryset = Project.objects.all()
+    serializer_class = ProjectSerializer
     permission_classes = [permissions.IsAuthenticated]

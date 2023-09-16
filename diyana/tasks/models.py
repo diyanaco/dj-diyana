@@ -101,6 +101,10 @@ class GroupTask(models.Model):
                                      null=True)
 
 
+class Tag(models.Model):
+    name = models.CharField(max_length=100)
+
+
 class Task(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
@@ -120,6 +124,7 @@ class Task(models.Model):
     date_details = models.ForeignKey(DateDetail,
                                      on_delete=models.SET_NULL,
                                      null=True)
+    tag = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True)
 
 
 class Subtask(models.Model):
@@ -141,3 +146,4 @@ class Subtask(models.Model):
     date_details = models.ForeignKey(DateDetail,
                                      on_delete=models.SET_NULL,
                                      null=True)
+    tag = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True)

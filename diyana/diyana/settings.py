@@ -169,3 +169,6 @@ REST_FRAMEWORK = {
     'TEST_REQUEST_DEFAULT_FORMAT':
     'vnd.api+json'
 }
+
+# Custom user model
+AUTH_USER_MODEL = 'tasks.User'

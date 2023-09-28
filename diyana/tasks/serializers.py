@@ -1,11 +1,13 @@
-from django.contrib.auth.models import User, Group
-from rest_framework import serializers
+from django.contrib.auth.models import Group
+from rest_framework_json_api import serializers
+from django.conf import settings
 
 from tasks.models import (
     Task,
     Code,
     Priority,
     Project,
+    User,
 )
 
 

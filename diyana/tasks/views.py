@@ -1,8 +1,6 @@
-from django.shortcuts import render
 from django.contrib.auth.models import Group
-from django.conf import settings
-from rest_framework import viewsets
 from rest_framework import permissions
+from rest_framework_json_api.views import RelationshipView, ModelViewSet
 
 from tasks.serializers import (
     UserSerializer,
@@ -11,17 +9,21 @@ from tasks.serializers import (
     CodeSerializer,
     PrioritySerializer,
     ProjectSerializer,
+    SubtaskSerializer,
+    PhaseSerializer
 )
 from tasks.models import (
     Task,
     Code,
     Priority,
     Project,
-    User
+    User,
+    Subtask,
+    Phase,
 )
 
 
-class UserViewSet(viewsets.ModelViewSet):
+class UserViewSet(ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
     """
@@ -30,7 +32,7 @@ class UserViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
 
-class GroupViewSet(viewsets.ModelViewSet):
+class GroupViewSet(ModelViewSet):
     """
     API endpoint that allows groups to be viewed or edited.
     """
@@ -39,7 +41,7 @@ class GroupViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
 
-class TaskViewSet(viewsets.ModelViewSet):
+class TaskViewSet(ModelViewSet):
     """
     API endpoint that allows groups to be viewed or edited.
     """
@@ -47,8 +49,27 @@ class TaskViewSet(viewsets.ModelViewSet):
     serializer_class = TaskSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+class TaskRelationshipView(RelationshipView):
+    """
+    API endpoint that allows groups to be viewed or edited.
+    """
+    queryset = Task.objects.all()
+    self_link_view_name = "task-relationships"
 
-class CodeViewSet(viewsets.ModelViewSet):
+
+class SubtaskViewSet(ModelViewSet):
+    """
+    API endpoint that allows groups to be viewed or edited.
+    """
+    queryset = Subtask.objects.all()
+    serializer_class = SubtaskSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+class SubtaskRelationshipView(RelationshipView):
+    queryset = Subtask.objects.all()
+    self_link_view_name = "subtask-relationships"
+
+class CodeViewSet(ModelViewSet):
     """
     API endpoint that allows groups to be viewed or edited.
     """
@@ -57,7 +78,7 @@ class CodeViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
 
-class PriorityViewSet(viewsets.ModelViewSet):
+class PriorityViewSet(ModelViewSet):
     """
     API endpoint that allows groups to be viewed or edited.
     """
@@ -65,11 +86,26 @@ class PriorityViewSet(viewsets.ModelViewSet):
     serializer_class = PrioritySerializer
     permission_classes = [permissions.IsAuthenticated]
 
+class PhaseViewSet(ModelViewSet):
+    """
+    API endpoint that allows groups to be viewed or edited.
+    """
+    queryset = Phase.objects.all()
+    serializer_class = PhaseSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
-class ProjectViewSet(viewsets.ModelViewSet):
+class PhaseRelationshipView(RelationshipView):
+    queryset = Phase.objects.all()
+    self_link_view_name = "phase-relationships"
+
+class ProjectViewSet(ModelViewSet):
     """
     API endpoint that allows groups to be viewed or edited.
     """
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+class ProjectRelationshipView(RelationshipView):
+    queryset = Project.objects.all()
+    self_link_view_name = "project-relationships"

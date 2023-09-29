@@ -14,8 +14,8 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
 from django.urls import include, path
+from django.urls.conf import re_path
 from rest_framework import routers
 from tasks import views
 
@@ -23,9 +23,11 @@ router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
 router.register(r'groups', views.GroupViewSet)
 router.register(r'tasks', views.TaskViewSet)
+router.register(r'subtasks', views.SubtaskViewSet)
 router.register(r'codes', views.CodeViewSet)
 router.register(r'priorities', views.PriorityViewSet)
 router.register(r'projects', views.ProjectViewSet)
+router.register(r'phases', views.ProjectViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
@@ -33,3 +35,59 @@ urlpatterns = [
                               namespace='rest_framework')),
     path('admin/', admin.site.urls),
 ]
+
+urlpatterns.append(
+    re_path(
+        r"^tasks/(?P<pk>[^/.]+)/(?P<related_field>[a-z]+(?:-[a-z]+)*)$",
+        views.TaskViewSet.as_view({"get": "retrieve_related"}),
+        name="task-related",
+    ))
+
+urlpatterns.append(
+    re_path(
+        r"^tasks/(?P<pk>[^/.]+)/relationships/(?P<related_field>[a-z]+(?:-[a-z]+)*)$",
+        views.TaskRelationshipView.as_view(),
+        name="task-relationships",
+    ))
+
+urlpatterns.append(
+    re_path(
+        r"^subtasks/(?P<pk>[^/.]+)/(?P<related_field>[a-z]+(?:-[a-z]+)*)$",
+        views.SubtaskViewSet.as_view({"get": "retrieve_related"}),
+        name="subtask-related",
+    ))
+
+urlpatterns.append(
+    re_path(
+        r"^subtasks/(?P<pk>[^/.]+)/relationships/(?P<related_field>[a-z]+(?:-[a-z]+)*)$",
+        views.SubtaskRelationshipView.as_view(),
+        name="subtask-relationships",
+    ))
+
+urlpatterns.append(
+    re_path(
+        r"^projects/(?P<pk>[^/.]+)/(?P<related_field>[a-z]+(?:-[a-z]+)*)$",
+        views.ProjectViewSet.as_view({"get": "retrieve_related"}),
+        name="project-related",
+    ))
+
+urlpatterns.append(
+    re_path(
+        r"^projects/(?P<pk>[^/.]+)/relationships/(?P<related_field>[a-z]+(?:-[a-z]+)*)$",
+        views.ProjectRelationshipView.as_view(),
+        name="project-relationships",
+    ))
+
+urlpatterns.append(
+    re_path(
+        r"^phases/(?P<pk>[^/.]+)/(?P<related_field>[a-z]+(?:-[a-z]+)*)$",
+        views.PhaseViewSet.as_view({"get": "retrieve_related"}),
+        name="phase-related",
+    ))
+
+urlpatterns.append(
+    re_path(
+        r"^phases/(?P<pk>[^/.]+)/relationships/(?P<related_field>[a-z]+(?:-[a-z]+)*)$",
+        views.PhaseRelationshipView.as_view(),
+        name="phase-relationships",
+    ))

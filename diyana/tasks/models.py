@@ -161,10 +161,14 @@ class Phase(ActivityTrackingModel, UuidPKModel):
     priority = models.ForeignKey(Priority,
                                  on_delete=models.SET_NULL,
                                  null=True)
-    project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True)
+    # project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True)
     date_details = models.ForeignKey(DateDetail,
                                      on_delete=models.SET_NULL,
                                      null=True)
+    
+class ProjectPhaseTemplateLink (ActivityTrackingModel, UuidPKModel):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, null=False)
+    phase = models.ForeignKey(Phase, on_delete=models.CASCADE, null=False)
 
 
 class Milestone(ActivityTrackingModel, UuidPKModel):
@@ -213,7 +217,7 @@ class Task(ActivityTrackingModel, UuidPKModel):
 class Subtask(ActivityTrackingModel, UuidPKModel):
     name = models.CharField(max_length=100)
     description = models.TextField()
-    task = models.ForeignKey(Task, on_delete=models.SET_NULL, null=True)
+    task = models.ForeignKey(Task, on_delete=models.SET_NULL, null=True, related_name="subs")
     reported_by = models.ForeignKey(User,
                                     on_delete=models.SET_NULL,
                                     null=True,

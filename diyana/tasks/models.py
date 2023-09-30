@@ -9,6 +9,7 @@ from django.contrib.auth.models import (
     PermissionsMixin,
 )
 
+
 class UuidPKModel(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
@@ -60,7 +61,8 @@ class User(AbstractUser, UuidPKModel, PermissionsMixin):
 
     def __str__(self):
         return self.email
-    
+
+
 class ActivityTrackingModel(models.Model):
 
     ACTIVITY_TRACKING_FIELDS = [
@@ -158,23 +160,24 @@ class ProjectGroupLink(ActivityTrackingModel, UuidPKModel):
 class Phase(ActivityTrackingModel, UuidPKModel):
     name = models.CharField(max_length=100)
     description = models.TextField()
-    priority = models.ForeignKey(Priority,
-                                 on_delete=models.SET_NULL,
-                                 null=True)
+    priority = models.OneToOneField(Priority,
+                                    on_delete=models.SET_NULL,
+                                    null=True)
     # project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True)
-    date_details = models.ForeignKey(DateDetail,
-                                     on_delete=models.SET_NULL,
-                                     null=True)
-    
-class ProjectPhaseTemplateLink (ActivityTrackingModel, UuidPKModel):
+    date_detail = models.ForeignKey(DateDetail,
+                                    on_delete=models.SET_NULL,
+                                    null=True)
+
+
+class ProjectPhaseTemplateLink(ActivityTrackingModel, UuidPKModel):
     project = models.ForeignKey(Project, on_delete=models.CASCADE, null=False)
     phase = models.ForeignKey(Phase, on_delete=models.CASCADE, null=False)
 
 
 class Milestone(ActivityTrackingModel, UuidPKModel):
-    date_details = models.ForeignKey(DateDetail,
-                                     on_delete=models.SET_NULL,
-                                     null=True)
+    date_detail = models.ForeignKey(DateDetail,
+                                    on_delete=models.SET_NULL,
+                                    null=True)
     name = models.CharField(max_length=100)
     phase = models.ForeignKey(Phase, on_delete=models.SET_NULL, null=True)
 
@@ -183,9 +186,9 @@ class GroupTask(ActivityTrackingModel, UuidPKModel):
     name = models.CharField(max_length=100)
     description = models.TextField()
     phase = models.ForeignKey(Phase, on_delete=models.SET_NULL, null=True)
-    date_details = models.ForeignKey(DateDetail,
-                                     on_delete=models.SET_NULL,
-                                     null=True)
+    date_detail = models.ForeignKey(DateDetail,
+                                    on_delete=models.SET_NULL,
+                                    null=True)
 
 
 class Tag(ActivityTrackingModel, UuidPKModel):
@@ -203,21 +206,24 @@ class Task(ActivityTrackingModel, UuidPKModel):
                                     on_delete=models.SET_NULL,
                                     null=True,
                                     related_name="task_reported_by")
-    priority = models.ForeignKey(Priority,
-                                 on_delete=models.SET_NULL,
-                                 null=True)
+    priority = models.OneToOneField(Priority,
+                                    on_delete=models.SET_NULL,
+                                    null=True)
     status = models.ForeignKey(Code, on_delete=models.SET_NULL, null=True)
     group = models.ForeignKey(GroupTask, on_delete=models.SET_NULL, null=True)
-    date_details = models.ForeignKey(DateDetail,
-                                     on_delete=models.SET_NULL,
-                                     null=True)
+    date_detail = models.ForeignKey(DateDetail,
+                                    on_delete=models.SET_NULL,
+                                    null=True)
     tag = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True)
 
 
 class Subtask(ActivityTrackingModel, UuidPKModel):
     name = models.CharField(max_length=100)
     description = models.TextField()
-    task = models.ForeignKey(Task, on_delete=models.SET_NULL, null=True, related_name="subs")
+    task = models.ForeignKey(Task,
+                             on_delete=models.SET_NULL,
+                             null=True,
+                             related_name="subs")
     reported_by = models.ForeignKey(User,
                                     on_delete=models.SET_NULL,
                                     null=True,
@@ -226,11 +232,11 @@ class Subtask(ActivityTrackingModel, UuidPKModel):
                                     on_delete=models.SET_NULL,
                                     null=True,
                                     related_name="subtask_assigned_to")
-    priority = models.ForeignKey(Priority,
-                                 on_delete=models.SET_NULL,
-                                 null=True)
+    priority = models.OneToOneField(Priority,
+                                    on_delete=models.SET_NULL,
+                                    null=True)
     status = models.ForeignKey(Code, on_delete=models.SET_NULL, null=True)
-    date_details = models.ForeignKey(DateDetail,
-                                     on_delete=models.SET_NULL,
-                                     null=True)
+    date_detail = models.ForeignKey(DateDetail,
+                                    on_delete=models.SET_NULL,
+                                    null=True)
     tag = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True)

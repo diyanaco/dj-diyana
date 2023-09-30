@@ -38,56 +38,56 @@ urlpatterns = [
 
 urlpatterns.append(
     re_path(
-        r"^tasks/(?P<pk>[^/.]+)/(?P<related_field>[a-z]+(?:-[a-z]+)*)$",
+        r"^tasks/(?P<pk>[^/.]+)/(?P<related_field>[a-z]+(?:-[a-z_]+)*)$",
         views.TaskViewSet.as_view({"get": "retrieve_related"}),
         name="task-related",
     ))
 
 urlpatterns.append(
     re_path(
-        r"^tasks/(?P<pk>[^/.]+)/relationships/(?P<related_field>[a-z]+(?:-[a-z]+)*)$",
+        r"^tasks/(?P<pk>[^/.]+)/relationships/(?P<related_field>[a-z]+(?:-[a-z_]+)*)$",
         views.TaskRelationshipView.as_view(),
         name="task-relationships",
     ))
 
 urlpatterns.append(
     re_path(
-        r"^subtasks/(?P<pk>[^/.]+)/(?P<related_field>[a-z]+(?:-[a-z]+)*)$",
+        r"^subtasks/(?P<pk>[^/.]+)/(?P<related_field>[a-z_]+(?:-[a-z]+)*)$",
         views.SubtaskViewSet.as_view({"get": "retrieve_related"}),
         name="subtask-related",
     ))
 
 urlpatterns.append(
     re_path(
-        r"^subtasks/(?P<pk>[^/.]+)/relationships/(?P<related_field>[a-z]+(?:-[a-z]+)*)$",
+        r"^subtasks/(?P<pk>[^/.]+)/relationships/(?P<related_field>[a-z_]+(?:-[a-z]+)*)$",
         views.SubtaskRelationshipView.as_view(),
         name="subtask-relationships",
     ))
 
 urlpatterns.append(
     re_path(
-        r"^projects/(?P<pk>[^/.]+)/(?P<related_field>[a-z]+(?:-[a-z]+)*)$",
+        r"^projects/(?P<pk>[^/.]+)/(?P<related_field>[a-z]+(?:-[a-z_]+)*)$",
         views.ProjectViewSet.as_view({"get": "retrieve_related"}),
         name="project-related",
     ))
 
 urlpatterns.append(
     re_path(
-        r"^projects/(?P<pk>[^/.]+)/relationships/(?P<related_field>[a-z]+(?:-[a-z]+)*)$",
+        r"^projects/(?P<pk>[^/.]+)/relationships/(?P<related_field>[a-z]+(?:-[a-z_]+)*)$",
         views.ProjectRelationshipView.as_view(),
         name="project-relationships",
     ))
 
 urlpatterns.append(
     re_path(
-        r"^phases/(?P<pk>[^/.]+)/(?P<related_field>[a-z]+(?:-[a-z]+)*)$",
+        r"^phases/(?P<pk>[^/.]+)/(?P<related_field>[a-z]+(?:-[a-z_]+)*)$",
         views.PhaseViewSet.as_view({"get": "retrieve_related"}),
         name="phase-related",
     ))
 
 urlpatterns.append(
     re_path(
-        r"^phases/(?P<pk>[^/.]+)/relationships/(?P<related_field>[a-z]+(?:-[a-z]+)*)$",
+        r"^phases/(?P<pk>[^/.]+)/relationships/(?P<related_field>[a-z]+(?:-[a-z_]+)*)$",
         views.PhaseRelationshipView.as_view(),
         name="phase-relationships",
     ))

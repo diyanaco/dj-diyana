@@ -8,7 +8,8 @@ from tasks.models import (
     Priority,
     Project,
     User,
-    Phase
+    Phase,
+    DateDetail,
 )
 
 
@@ -26,7 +27,7 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['url', 'name']
 
 
-class TaskSerializer(serializers.HyperlinkedModelSerializer):
+class TaskSerializer(serializers.ModelSerializer):
     subs = relations.ResourceRelatedField(
         related_link_view_name="task-related",
         self_link_view_name="task-relationships",
@@ -34,13 +35,24 @@ class TaskSerializer(serializers.HyperlinkedModelSerializer):
         many=True,
         required=False,
     )
+    # date_detail = relations.ResourceRelatedField(
+    #     related_link_view_name="task-related",
+    #     self_link_view_name="task-relationships",
+    #     queryset=DateDetail.objects,
+    #     source="date_detail",
+    # )
+
     included_serializers = {
         "subs": "tasks.serializers.SubtaskSerializer",
+        # "datedetail": "tasks.serializers.DateDetailSerializer"
     }
+
     class Meta:
         model = Task
         fields = [
-            'id',
+            'url',
+            'assigned_to',
+            'reported_by',
             'url',
             'name',
             'description',
@@ -48,7 +60,9 @@ class TaskSerializer(serializers.HyperlinkedModelSerializer):
             'priority',
             'group',
             'subs',
+            'date_detail',
         ]
+
 
 class SubtaskSerializer(serializers.HyperlinkedModelSerializer):
     task = relations.ResourceRelatedField(
@@ -58,9 +72,10 @@ class SubtaskSerializer(serializers.HyperlinkedModelSerializer):
     )
     included_serializers = {
         "task": "tasks.serializers.TaskSerializer",
+        # "date_detail": "tasks.serializers.DateDetailSerializer",
     }
 
-    class Meta :
+    class Meta:
         model = Subtask
         fields = [
             'url',
@@ -71,9 +86,10 @@ class SubtaskSerializer(serializers.HyperlinkedModelSerializer):
             'assigned_to',
             'priority',
             'status',
-            'date_details',
             'tag',
+            'date_detail',
         ]
+
 
 class CodeSerializer(serializers.HyperlinkedModelSerializer):
 
@@ -102,6 +118,7 @@ class PrioritySerializer(serializers.HyperlinkedModelSerializer):
             'value_int',
         ]
 
+
 class PhaseSerializer(serializers.HyperlinkedModelSerializer):
 
     project = relations.ResourceRelatedField(
@@ -109,6 +126,7 @@ class PhaseSerializer(serializers.HyperlinkedModelSerializer):
         self_link_view_name="phase-relationships",
         queryset=Project.objects,
     )
+
     class Meta:
         model = Phase
         fields = [
@@ -120,6 +138,7 @@ class PhaseSerializer(serializers.HyperlinkedModelSerializer):
             'date_details',
         ]
 
+
 class ProjectSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
@@ -129,4 +148,32 @@ class ProjectSerializer(serializers.HyperlinkedModelSerializer):
             'name',
             'description',
             'code',
+        ]
+
+
+class DateDetailSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = DateDetail
+        fields = [
+            'url',
+            'from_type',
+            'due_date',
+            'start_date',
+            'reported_date',
+            'actual_start_date',
+            'actual_end_date',
+        ]
+
+
+class PrioritySerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = Priority
+        fields = [
+            'urgency',
+            'gravity',
+            'criticality',
+            'value_int',
+            'value_str',
         ]

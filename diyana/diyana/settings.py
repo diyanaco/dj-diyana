@@ -86,6 +86,14 @@ DATABASES = {
         "HOST": "127.0.0.1",
         "PORT": "3306",
     }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql',
+    #     'NAME': 'diyana',
+    #     "USER": "postgres",
+    #     "PASSWORD": "Muhammad21",
+    #     "HOST": "127.0.0.1",
+    #     "PORT": "5432",
+    # }
 }
 
 # Password validation
@@ -169,6 +177,7 @@ REST_FRAMEWORK = {
     'TEST_REQUEST_DEFAULT_FORMAT':
     'vnd.api+json'
 }
+JSON_API_FORMAT_FIELD_NAMES = 'camelize'
 
 # Custom user model
 AUTH_USER_MODEL = 'tasks.User'

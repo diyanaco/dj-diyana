@@ -20,14 +20,17 @@ from rest_framework import routers
 from tasks import views
 
 router = routers.DefaultRouter(trailing_slash=False)
-router.register(r'users', views.UserViewSet)
-router.register(r'groups', views.GroupViewSet)
+# router.register(r'users', views.UserViewSet)
+# router.register(r'groups', views.GroupViewSet)
+router.register(r'grouptasks', views.GroupTaskViewSet)
 router.register(r'tasks', views.TaskViewSet)
 router.register(r'subtasks', views.SubtaskViewSet)
-router.register(r'codes', views.CodeViewSet)
+# router.register(r'codes', views.CodeViewSet)
 router.register(r'priorities', views.PriorityViewSet)
 router.register(r'projects', views.ProjectViewSet)
-router.register(r'phases', views.ProjectViewSet)
+router.register(r'phases', views.PhaseViewSet)
+router.register(r'milestones', views.MilestoneViewSet)
+router.register(r'tags', views.TagViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
@@ -38,14 +41,14 @@ urlpatterns = [
 
 urlpatterns.append(
     re_path(
-        r"^tasks/(?P<pk>[^/.]+)/(?P<related_field>[a-z]+(?:-[a-z_]+)*)$",
+        r"^tasks/(?P<pk>[^/.]+)/(?P<related_field>[a-z_]+(?:-[a-z_]+)*)$",
         views.TaskViewSet.as_view({"get": "retrieve_related"}),
         name="task-related",
     ))
 
 urlpatterns.append(
     re_path(
-        r"^tasks/(?P<pk>[^/.]+)/relationships/(?P<related_field>[a-z]+(?:-[a-z_]+)*)$",
+        r"^tasks/(?P<pk>[^/.]+)/relationships/(?P<related_field>[a-z_]+(?:-[a-z_]+)*)$",
         views.TaskRelationshipView.as_view(),
         name="task-relationships",
     ))
@@ -66,28 +69,70 @@ urlpatterns.append(
 
 urlpatterns.append(
     re_path(
-        r"^projects/(?P<pk>[^/.]+)/(?P<related_field>[a-z]+(?:-[a-z_]+)*)$",
+        r"^projects/(?P<pk>[^/.]+)/(?P<related_field>[a-z_]+(?:-[a-z_]+)*)$",
         views.ProjectViewSet.as_view({"get": "retrieve_related"}),
         name="project-related",
     ))
 
 urlpatterns.append(
     re_path(
-        r"^projects/(?P<pk>[^/.]+)/relationships/(?P<related_field>[a-z]+(?:-[a-z_]+)*)$",
+        r"^projects/(?P<pk>[^/.]+)/relationships/(?P<related_field>[a-z_]+(?:-[a-z_]+)*)$",
         views.ProjectRelationshipView.as_view(),
         name="project-relationships",
     ))
 
 urlpatterns.append(
     re_path(
-        r"^phases/(?P<pk>[^/.]+)/(?P<related_field>[a-z]+(?:-[a-z_]+)*)$",
+        r"^phases/(?P<pk>[^/.]+)/(?P<related_field>[a-z_]+(?:-[a-z_]+)*)$",
         views.PhaseViewSet.as_view({"get": "retrieve_related"}),
         name="phase-related",
     ))
 
 urlpatterns.append(
     re_path(
-        r"^phases/(?P<pk>[^/.]+)/relationships/(?P<related_field>[a-z]+(?:-[a-z_]+)*)$",
+        r"^phases/(?P<pk>[^/.]+)/relationships/(?P<related_field>[a-z_]+(?:-[a-z_]+)*)$",
         views.PhaseRelationshipView.as_view(),
         name="phase-relationships",
+    ))
+
+urlpatterns.append(
+    re_path(
+        r"^milestones/(?P<pk>[^/.]+)/(?P<related_field>[a-z_]+(?:-[a-z_]+)*)$",
+        views.MilestoneViewSet.as_view({"get": "retrieve_related"}),
+        name="milestone-related",
+    ))
+
+urlpatterns.append(
+    re_path(
+        r"^milestones/(?P<pk>[^/.]+)/relationships/(?P<related_field>[a-z_]+(?:-[a-z_]+)*)$",
+        views.MilestoneRelationshipView.as_view(),
+        name="milestone-relationships",
+    ))
+
+urlpatterns.append(
+    re_path(
+        r"^grouptasks/(?P<pk>[^/.]+)/(?P<related_field>[a-z_]+(?:-[a-z_]+)*)$",
+        views.GroupTaskViewSet.as_view({"get": "retrieve_related"}),
+        name="grouptask-related",
+    ))
+
+urlpatterns.append(
+    re_path(
+        r"^grouptasks/(?P<pk>[^/.]+)/relationships/(?P<related_field>[a-z_]+(?:-[a-z_]+)*)$",
+        views.GroupTaskRelationshipView.as_view(),
+        name="grouptask-relationships",
+    ))
+
+urlpatterns.append(
+    re_path(
+        r"^tags/(?P<pk>[^/.]+)/(?P<related_field>[a-z_]+(?:-[a-z_]+)*)$",
+        views.TagViewSet.as_view({"get": "retrieve_related"}),
+        name="tag-related",
+    ))
+
+urlpatterns.append(
+    re_path(
+        r"^tags/(?P<pk>[^/.]+)/relationships/(?P<related_field>[a-z_]+(?:-[a-z_]+)*)$",
+        views.TagRelationshipView.as_view(),
+        name="tag-relationships",
     ))

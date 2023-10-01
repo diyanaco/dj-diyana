@@ -3,23 +3,29 @@ from rest_framework import permissions
 from rest_framework_json_api.views import RelationshipView, ModelViewSet
 
 from tasks.serializers import (
+    GroupTaskSerializer,
+    TaskSerializer,
+    SubtaskSerializer,
     UserSerializer,
     GroupSerializer,
-    TaskSerializer,
     CodeSerializer,
     PrioritySerializer,
     ProjectSerializer,
-    SubtaskSerializer,
-    PhaseSerializer
+    PhaseSerializer,
+    MilestoneSerializer,
+    TagSerializer,
 )
 from tasks.models import (
+    GroupTask,
     Task,
+    Subtask,
     Code,
     Priority,
     Project,
     User,
-    Subtask,
     Phase,
+    Milestone,
+    Tag,
 )
 
 
@@ -109,3 +115,40 @@ class ProjectViewSet(ModelViewSet):
 class ProjectRelationshipView(RelationshipView):
     queryset = Project.objects.all()
     self_link_view_name = "project-relationships"
+
+class MilestoneViewSet(ModelViewSet):
+    """
+    API endpoint that allows groups to be viewed or edited.
+    """
+    queryset = Milestone.objects.all()
+    serializer_class = MilestoneSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+class MilestoneRelationshipView(RelationshipView):
+    queryset = Milestone.objects.all()
+    self_link_view_name = "milestone-relationships"
+
+
+class GroupTaskViewSet(ModelViewSet):
+    """
+    API endpoint that allows groups to be viewed or edited.
+    """
+    queryset = GroupTask.objects.all()
+    serializer_class = GroupTaskSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+class GroupTaskRelationshipView(RelationshipView):
+    queryset = GroupTask.objects.all()
+    self_link_view_name = "grouptask-relationships"
+
+class TagViewSet(ModelViewSet):
+    """
+    API endpoint that allows groups to be viewed or edited.
+    """
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+class TagRelationshipView(RelationshipView):
+    queryset = Tag.objects.all()
+    self_link_view_name = "grouptask-relationships"

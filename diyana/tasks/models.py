@@ -111,7 +111,7 @@ class DateDetail(ActivityTrackingModel, UuidPKModel):
 class Code(ActivityTrackingModel, UuidPKModel):
     CODE_FROM_TYPE_CHOICES = [
         ("CONSTANT", "Constant"),
-        ("STATUS", "Status"),
+        ("STATUS", "Status"),  # For task and subtasks
         ("PROJECT_TYPE", "Project Type"),
     ]
     # Human readable name
@@ -125,7 +125,7 @@ class Code(ActivityTrackingModel, UuidPKModel):
     value_bool = models.BooleanField()
 
     def __str__(self):
-        return f"{self.name} ({self.value_str}; {self.value_int}; {self.value_bool})"
+        return f"{self.name} ({self.value_str}, {self.value_int}, {self.value_bool})"
 
 
 class Priority(ActivityTrackingModel, UuidPKModel):
@@ -145,6 +145,9 @@ class Priority(ActivityTrackingModel, UuidPKModel):
     value_str = models.CharField(max_length=100,
                                  choices=PRIORITY_VALUE_STR_CHOICES)
 
+    def __str__(self):
+        return f"{self.value_str}"
+
 
 class Project(ActivityTrackingModel, UuidPKModel):
     name = models.CharField(max_length=100)
@@ -163,10 +166,12 @@ class Phase(ActivityTrackingModel, UuidPKModel):
     priority = models.OneToOneField(Priority,
                                     on_delete=models.SET_NULL,
                                     null=True)
-    # project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True)
     date_detail = models.ForeignKey(DateDetail,
                                     on_delete=models.SET_NULL,
                                     null=True)
+
+    def __str__(self):
+        return f"{self.name} (Priority : {self.priority})"
 
 
 class ProjectPhaseTemplateLink(ActivityTrackingModel, UuidPKModel):
@@ -175,11 +180,15 @@ class ProjectPhaseTemplateLink(ActivityTrackingModel, UuidPKModel):
 
 
 class Milestone(ActivityTrackingModel, UuidPKModel):
+    name = models.CharField(max_length=100)
+    phase = models.ForeignKey(Phase, on_delete=models.SET_NULL, null=True)
     date_detail = models.ForeignKey(DateDetail,
                                     on_delete=models.SET_NULL,
                                     null=True)
+
+
+class Tag(ActivityTrackingModel, UuidPKModel):
     name = models.CharField(max_length=100)
-    phase = models.ForeignKey(Phase, on_delete=models.SET_NULL, null=True)
 
 
 class GroupTask(ActivityTrackingModel, UuidPKModel):
@@ -189,10 +198,7 @@ class GroupTask(ActivityTrackingModel, UuidPKModel):
     date_detail = models.ForeignKey(DateDetail,
                                     on_delete=models.SET_NULL,
                                     null=True)
-
-
-class Tag(ActivityTrackingModel, UuidPKModel):
-    name = models.CharField(max_length=100)
+    tags = models.ManyToManyField(Tag, related_name="tag_grouptasks")
 
 
 class Task(ActivityTrackingModel, UuidPKModel):
@@ -214,7 +220,7 @@ class Task(ActivityTrackingModel, UuidPKModel):
     date_detail = models.ForeignKey(DateDetail,
                                     on_delete=models.SET_NULL,
                                     null=True)
-    tag = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True)
+    tags = models.ManyToManyField(Tag, related_name="tag_tasks")
 
 
 class Subtask(ActivityTrackingModel, UuidPKModel):
@@ -239,4 +245,4 @@ class Subtask(ActivityTrackingModel, UuidPKModel):
     date_detail = models.ForeignKey(DateDetail,
                                     on_delete=models.SET_NULL,
                                     null=True)
-    tag = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True)
+    tags = models.ManyToManyField(Tag, related_name="tag_subtasks")

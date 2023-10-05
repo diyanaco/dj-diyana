@@ -1,6 +1,7 @@
 from django.contrib.auth.models import Group
 from rest_framework_json_api import serializers, relations
 from datetime import datetime
+from rest_framework.exceptions import ValidationError
 
 from tasks.models import (
     GroupTask,
@@ -179,6 +180,10 @@ class TemplateSerializer(serializers.ModelSerializer):
         required=False,
     )
 
+    included_serializers = {
+        "phases": "tasks.serializers.PhaseSerializer",
+    }
+
     class Meta:
         model = Template
         fields = ['url', 'name', 'description', 'phases']
@@ -248,6 +253,8 @@ class ProjectSerializer(serializers.ModelSerializer):
         required=False,
     )
 
+    code = serializers.CharField(required=False)
+
     included_serializers = {
         "teams": "tasks.serializers.GroupSerializer",
         "phases": "tasks.serializers.PhaseSerializer",
@@ -265,6 +272,14 @@ class ProjectSerializer(serializers.ModelSerializer):
             'template',
             'code',
         ]
+
+    def create(self, validated_data):
+        name: str = validated_data['name']
+        # Only accept single word project names
+        if ' ' in name:
+            raise ValidationError("Project name cannot contain spaces")
+        validated_data['code'] = name.upper()
+        return super().create(validated_data)
 
 
 class DateDetailSerializer(serializers.ModelSerializer):

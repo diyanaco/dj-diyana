@@ -112,7 +112,7 @@ class Code(ActivityTrackingModel, UuidPKModel):
     CODE_FROM_TYPE_CHOICES = [
         ("CONSTANT", "Constant"),
         ("STATUS", "Status"),  # For task and subtasks
-        ("PROJECT_TYPE", "Project Type"),
+        # ("PROJECT_TYPE", "Project Type"),
     ]
     # Human readable name
     name = models.CharField(max_length=100)
@@ -174,7 +174,7 @@ class Template(ActivityTrackingModel, UuidPKModel):
 class Project(ActivityTrackingModel, UuidPKModel):
     name = models.CharField(max_length=100)
     description = models.TextField()
-    code = models.ForeignKey(Code, on_delete=models.SET_NULL, null=True)
+    code = models.CharField(max_length=100)
     teams = models.ManyToManyField(Group, related_name="projects")
     template = models.ForeignKey(Template,
                                  related_name='projects',

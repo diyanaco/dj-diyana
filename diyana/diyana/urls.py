@@ -20,15 +20,15 @@ from rest_framework import routers
 from tasks import views
 
 router = routers.DefaultRouter(trailing_slash=False)
-# router.register(r'users', views.UserViewSet)
-# router.register(r'groups', views.GroupViewSet)
+router.register(r'users', views.UserViewSet)
+router.register(r'groups', views.GroupViewSet)
+router.register(r'projects', views.ProjectViewSet)
+router.register(r'phases', views.PhaseViewSet)
 router.register(r'grouptasks', views.GroupTaskViewSet)
 router.register(r'tasks', views.TaskViewSet)
 router.register(r'subtasks', views.SubtaskViewSet)
 # router.register(r'codes', views.CodeViewSet)
 router.register(r'priorities', views.PriorityViewSet)
-router.register(r'projects', views.ProjectViewSet)
-router.register(r'phases', views.PhaseViewSet)
 router.register(r'milestones', views.MilestoneViewSet)
 router.register(r'tags', views.TagViewSet)
 

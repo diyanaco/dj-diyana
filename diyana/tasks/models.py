@@ -149,42 +149,63 @@ class Priority(ActivityTrackingModel, UuidPKModel):
         return f"{self.value_str}"
 
 
-class Project(ActivityTrackingModel, UuidPKModel):
-    name = models.CharField(max_length=100)
-    description = models.TextField()
-    code = models.ForeignKey(Code, on_delete=models.SET_NULL, null=True)
-
-
-class ProjectGroupLink(ActivityTrackingModel, UuidPKModel):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, null=False)
-    group = models.ForeignKey(Group, on_delete=models.CASCADE, null=False)
-
-
 class Phase(ActivityTrackingModel, UuidPKModel):
     name = models.CharField(max_length=100)
     description = models.TextField()
     priority = models.OneToOneField(Priority,
                                     on_delete=models.SET_NULL,
                                     null=True)
-    date_detail = models.ForeignKey(DateDetail,
-                                    on_delete=models.SET_NULL,
-                                    null=True)
+    date_detail = models.OneToOneField(DateDetail,
+                                       on_delete=models.SET_NULL,
+                                       null=True)
 
     def __str__(self):
         return f"{self.name} (Priority : {self.priority})"
 
 
-class ProjectPhaseTemplateLink(ActivityTrackingModel, UuidPKModel):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, null=False)
-    phase = models.ForeignKey(Phase, on_delete=models.CASCADE, null=False)
+class Template(ActivityTrackingModel, UuidPKModel):
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+    phases = models.ManyToManyField(Phase,
+                                    related_name="template",
+                                    through="ProjectTemplatePhase")
+
+
+class Project(ActivityTrackingModel, UuidPKModel):
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+    code = models.ForeignKey(Code, on_delete=models.SET_NULL, null=True)
+    teams = models.ManyToManyField(Group, related_name="projects")
+    template = models.ForeignKey(Template,
+                                 related_name='projects',
+                                 on_delete=models.SET_NULL,
+                                 null=True)
+    phases = models.ManyToManyField(Phase,
+                                    related_name="projects",
+                                    through="ProjectTemplatePhase")
+
+
+class ProjectTemplatePhase(ActivityTrackingModel, UuidPKModel):
+
+    class Meta:
+        db_table = 'tasks_project_template_phases'
+
+    template = models.ForeignKey(Template,
+                                 on_delete=models.SET_NULL,
+                                 null=True)
+    phase = models.ForeignKey(Phase, on_delete=models.SET_NULL, null=True)
+    project = models.ForeignKey(Project,
+                                on_delete=models.SET_NULL,
+                                null=True,
+                                unique=True)
 
 
 class Milestone(ActivityTrackingModel, UuidPKModel):
     name = models.CharField(max_length=100)
     phase = models.ForeignKey(Phase, on_delete=models.SET_NULL, null=True)
-    date_detail = models.ForeignKey(DateDetail,
-                                    on_delete=models.SET_NULL,
-                                    null=True)
+    date_detail = models.OneToOneField(DateDetail,
+                                       on_delete=models.SET_NULL,
+                                       null=True)
 
 
 class Tag(ActivityTrackingModel, UuidPKModel):
@@ -195,9 +216,9 @@ class GroupTask(ActivityTrackingModel, UuidPKModel):
     name = models.CharField(max_length=100)
     description = models.TextField()
     phase = models.ForeignKey(Phase, on_delete=models.SET_NULL, null=True)
-    date_detail = models.ForeignKey(DateDetail,
-                                    on_delete=models.SET_NULL,
-                                    null=True)
+    date_detail = models.OneToOneField(DateDetail,
+                                       on_delete=models.SET_NULL,
+                                       null=True)
     tags = models.ManyToManyField(Tag, related_name="tag_grouptasks")
 
 
@@ -216,10 +237,13 @@ class Task(ActivityTrackingModel, UuidPKModel):
                                     on_delete=models.SET_NULL,
                                     null=True)
     status = models.ForeignKey(Code, on_delete=models.SET_NULL, null=True)
-    group = models.ForeignKey(GroupTask, on_delete=models.SET_NULL, null=True)
-    date_detail = models.ForeignKey(DateDetail,
-                                    on_delete=models.SET_NULL,
-                                    null=True)
+    group = models.ForeignKey(GroupTask,
+                              on_delete=models.SET_NULL,
+                              null=True,
+                              related_name="tasks")
+    date_detail = models.OneToOneField(DateDetail,
+                                       on_delete=models.SET_NULL,
+                                       null=True)
     tags = models.ManyToManyField(Tag, related_name="tag_tasks")
 
 
@@ -242,7 +266,7 @@ class Subtask(ActivityTrackingModel, UuidPKModel):
                                     on_delete=models.SET_NULL,
                                     null=True)
     status = models.ForeignKey(Code, on_delete=models.SET_NULL, null=True)
-    date_detail = models.ForeignKey(DateDetail,
-                                    on_delete=models.SET_NULL,
-                                    null=True)
+    date_detail = models.OneToOneField(DateDetail,
+                                       on_delete=models.SET_NULL,
+                                       null=True)
     tags = models.ManyToManyField(Tag, related_name="tag_subtasks")

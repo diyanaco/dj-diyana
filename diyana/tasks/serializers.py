@@ -143,11 +143,22 @@ class PrioritySerializer(serializers.ModelSerializer):
 
 class PhaseSerializer(serializers.ModelSerializer):
 
-    # project = relations.ResourceRelatedField(
-    #     related_link_view_name="phase-related",
-    #     self_link_view_name="phase-relationships",
-    #     queryset=Project.objects,
-    # )
+    projects = relations.ResourceRelatedField(
+        related_link_view_name="phase-related",
+        self_link_view_name="phase-relationships",
+        queryset=Project.objects,
+        many=True,
+        required=False,
+    )
+
+    groups = relations.ResourceRelatedField(
+        related_link_view_name = "phase-related",
+        self_link_view_name = "phase-relationships",
+        queryset = GroupTask.objects,
+        many = True,
+        required = False,
+    )
+
 
     class Meta:
         model = Phase
@@ -156,12 +167,33 @@ class PhaseSerializer(serializers.ModelSerializer):
             'name',
             'description',
             'priority',
-            # 'project',
+            'projects',
+            'groups',
             'date_detail',
         ]
 
 
 class ProjectSerializer(serializers.ModelSerializer):
+    teams = relations.ResourceRelatedField(
+        related_link_view_name="project-related",
+        self_link_view_name="project-relationships",
+        queryset=Group.objects,
+        many=True,
+        required=False,
+    )
+    phases = relations.ResourceRelatedField(
+        related_link_view_name="project-related",
+        self_link_view_name="project-relationships",
+        queryset=Phase.objects,
+        many=True,
+        required=False,
+    )
+    # templates = relations.Re
+
+    included_serializers = {
+        "teams": "tasks.serializers.GroupSerializer",
+        "phases": "tasks.serializers.PhaseSerializer",
+    }
 
     class Meta:
         model = Project
@@ -169,6 +201,8 @@ class ProjectSerializer(serializers.ModelSerializer):
             'url',
             'name',
             'description',
+            'teams',
+            'phases',
             'code',
         ]
 
@@ -193,7 +227,7 @@ class PrioritySerializer(serializers.ModelSerializer):
     class Meta:
         model = Priority
         fields = [
-            'url'
+            'url',
             'urgency',
             'gravity',
             'criticality',
@@ -222,9 +256,24 @@ class GroupTaskSerializer(serializers.ModelSerializer):
         many=True,
         required=False,
     )
+    tasks = relations.ResourceRelatedField(
+        related_link_view_name="grouptask-related",
+        self_link_view_name="grouptask-relationships",
+        queryset=Task.objects,
+        many=True,
+        required=False,
+    )
+    phase = relations.ResourceRelatedField(
+        related_link_view_name = "grouptask-related",
+        self_link_view_name = "grouptask-relationships",
+        queryset = Phase.objects,
+        required = False,
+    )
     included_serializers = {
         "tags": "tasks.serializers.TagSerializer",
+        "tasks": "tasks.serializers.TaskSerializer",
     }
+        
 
     class Meta:
         model = GroupTask
@@ -233,8 +282,9 @@ class GroupTaskSerializer(serializers.ModelSerializer):
             'name',
             'description',
             'phase',
-            'date_detail',
+            'tasks',
             'tags',
+            'date_detail',
         ]
 
 

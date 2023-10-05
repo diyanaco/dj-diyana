@@ -1,5 +1,6 @@
 from django.contrib.auth.models import Group
 from rest_framework_json_api import serializers, relations
+from datetime import datetime
 
 from tasks.models import (
     GroupTask,
@@ -13,6 +14,7 @@ from tasks.models import (
     DateDetail,
     Milestone,
     Tag,
+    Template,
 )
 
 
@@ -46,17 +48,17 @@ class TaskSerializer(serializers.ModelSerializer):
         many=True,
         required=False,
     )
-    # date_detail = relations.ResourceRelatedField(
-    #     related_link_view_name="task-related",
-    #     self_link_view_name="task-relationships",
-    #     queryset=DateDetail.objects,
-    #     source="date_detail",
-    # )
+    dates = relations.ResourceRelatedField(
+        related_link_view_name="task-related",
+        queryset=DateDetail.objects,
+        source="date_detail",
+    )
+    priority_value = serializers.SerializerMethodField()
 
     included_serializers = {
         "subs": "tasks.serializers.SubtaskSerializer",
         "tags": "tasks.serializers.TagSerializer",
-        # "datedetail": "tasks.serializers.DateDetailSerializer"
+        "dates": "tasks.serializers.DateDetailSerializer"
     }
 
     class Meta:
@@ -68,13 +70,30 @@ class TaskSerializer(serializers.ModelSerializer):
             'url',
             'name',
             'description',
+            'priority_value',
             'status',
             'priority',
             'group',
             'subs',
             'tags',
-            'date_detail',
+            'dates',
         ]
+
+    def create(self, validated_data):
+        initial_priority = Priority(urgency=0,
+                                    gravity=0,
+                                    criticality=0,
+                                    value_str="Low")
+        initial_priority.save()
+        validated_data['priority'] = initial_priority
+
+        date_detail = DateDetail(reported_date=datetime.today())
+        date_detail.save()
+        validated_data['date_detail'] = date_detail
+        return super().create(validated_data)
+
+    def get_priority_value(self, obj):
+        return obj.priority.value_str
 
 
 class SubtaskSerializer(serializers.ModelSerializer):
@@ -90,9 +109,15 @@ class SubtaskSerializer(serializers.ModelSerializer):
         many=True,
         required=False,
     )
+    dates = relations.ResourceRelatedField(
+        related_link_view_name="task-related",
+        queryset=DateDetail.objects,
+        source="date_detail",
+    )
+    priority_value = serializers.SerializerMethodField()
     included_serializers = {
         "task": "tasks.serializers.TaskSerializer",
-        # "date_detail": "tasks.serializers.DateDetailSerializer",
+        "dates": "tasks.serializers.DateDetailSerializer",
         "tags": "tasks.serializers.TagSerializer",
     }
 
@@ -102,14 +127,18 @@ class SubtaskSerializer(serializers.ModelSerializer):
             'url',
             'name',
             'description',
+            'priority_value',
             'task',
             'reported_by',
             'assigned_to',
             'priority',
             'status',
             'tags',
-            'date_detail',
+            'dates',
         ]
+
+    def get_priority_value(self, obj):
+        return obj.priority.value_str
 
 
 class CodeSerializer(serializers.ModelSerializer):
@@ -141,6 +170,20 @@ class PrioritySerializer(serializers.ModelSerializer):
         ]
 
 
+class TemplateSerializer(serializers.ModelSerializer):
+    phases = relations.ResourceRelatedField(
+        related_link_view_name="template-related",
+        self_link_view_name="template-relationships",
+        queryset=Phase.objects,
+        many=True,
+        required=False,
+    )
+
+    class Meta:
+        model = Template
+        fields = ['url', 'name', 'description', 'phases']
+
+
 class PhaseSerializer(serializers.ModelSerializer):
 
     projects = relations.ResourceRelatedField(
@@ -152,13 +195,19 @@ class PhaseSerializer(serializers.ModelSerializer):
     )
 
     groups = relations.ResourceRelatedField(
-        related_link_view_name = "phase-related",
-        self_link_view_name = "phase-relationships",
-        queryset = GroupTask.objects,
-        many = True,
-        required = False,
+        related_link_view_name="phase-related",
+        self_link_view_name="phase-relationships",
+        queryset=GroupTask.objects,
+        many=True,
+        required=False,
+    )
+    dates = relations.ResourceRelatedField(
+        related_link_view_name="task-related",
+        queryset=DateDetail.objects,
+        source="date_detail",
     )
 
+    priority_value = serializers.SerializerMethodField()
 
     class Meta:
         model = Phase
@@ -166,11 +215,15 @@ class PhaseSerializer(serializers.ModelSerializer):
             'url',
             'name',
             'description',
+            'priority_value',
             'priority',
             'projects',
             'groups',
-            'date_detail',
+            'dates',
         ]
+
+    def get_priority_value(self, obj):
+        return obj.priority.value_str
 
 
 class ProjectSerializer(serializers.ModelSerializer):
@@ -188,11 +241,17 @@ class ProjectSerializer(serializers.ModelSerializer):
         many=True,
         required=False,
     )
-    # templates = relations.Re
+    template = relations.ResourceRelatedField(
+        related_link_view_name="project-related",
+        self_link_view_name="project-relationships",
+        queryset=Template.objects,
+        required=False,
+    )
 
     included_serializers = {
         "teams": "tasks.serializers.GroupSerializer",
         "phases": "tasks.serializers.PhaseSerializer",
+        "template": "tasks.serializers.TemplateSerializer"
     }
 
     class Meta:
@@ -203,11 +262,21 @@ class ProjectSerializer(serializers.ModelSerializer):
             'description',
             'teams',
             'phases',
+            'template',
             'code',
         ]
 
 
 class DateDetailSerializer(serializers.ModelSerializer):
+    task = relations.ResourceRelatedField(
+        related_link_view_name="dates-related",
+        # self_link_view_name="dates-relationships",
+        queryset=Task.objects,
+        required=False,
+    )
+    included_serializer = {
+        'task': 'tasks.serializers.TaskSerializer',
+    }
 
     class Meta:
         model = DateDetail
@@ -219,6 +288,7 @@ class DateDetailSerializer(serializers.ModelSerializer):
             'reported_date',
             'actual_start_date',
             'actual_end_date',
+            'task',
         ]
 
 
@@ -264,16 +334,15 @@ class GroupTaskSerializer(serializers.ModelSerializer):
         required=False,
     )
     phase = relations.ResourceRelatedField(
-        related_link_view_name = "grouptask-related",
-        self_link_view_name = "grouptask-relationships",
-        queryset = Phase.objects,
-        required = False,
+        related_link_view_name="grouptask-related",
+        self_link_view_name="grouptask-relationships",
+        queryset=Phase.objects,
+        required=False,
     )
     included_serializers = {
         "tags": "tasks.serializers.TagSerializer",
         "tasks": "tasks.serializers.TaskSerializer",
     }
-        
 
     class Meta:
         model = GroupTask

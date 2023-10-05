@@ -23,6 +23,7 @@ router = routers.DefaultRouter(trailing_slash=False)
 router.register(r'users', views.UserViewSet)
 router.register(r'groups', views.GroupViewSet)
 router.register(r'projects', views.ProjectViewSet)
+router.register(r'templates', views.TemplateViewSet)
 router.register(r'phases', views.PhaseViewSet)
 router.register(r'grouptasks', views.GroupTaskViewSet)
 router.register(r'tasks', views.TaskViewSet)
@@ -31,6 +32,7 @@ router.register(r'subtasks', views.SubtaskViewSet)
 router.register(r'priorities', views.PriorityViewSet)
 router.register(r'milestones', views.MilestoneViewSet)
 router.register(r'tags', views.TagViewSet)
+router.register(r'dates', views.DateDetailViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
@@ -135,4 +137,25 @@ urlpatterns.append(
         r"^tags/(?P<pk>[^/.]+)/relationships/(?P<related_field>[a-z_]+(?:-[a-z_]+)*)$",
         views.TagRelationshipView.as_view(),
         name="tag-relationships",
+    ))
+
+urlpatterns.append(
+    re_path(
+        r"^templates/(?P<pk>[^/.]+)/(?P<related_field>[a-z_]+(?:-[a-z_]+)*)$",
+        views.TemplateViewSet.as_view({"get": "retrieve_related"}),
+        name="template-related",
+    ))
+
+urlpatterns.append(
+    re_path(
+        r"^templates/(?P<pk>[^/.]+)/relationships/(?P<related_field>[a-z_]+(?:-[a-z_]+)*)$",
+        views.TemplateRelationshipView.as_view(),
+        name="template-relationships",
+    ))
+
+urlpatterns.append(
+    re_path(
+        r"^dates/(?P<pk>[^/.]+)/(?P<related_field>[a-z_]+(?:-[a-z_]+)*)$",
+        views.DateDetailViewSet.as_view({"get": "retrieve_related"}),
+        name="dates-related",
     ))

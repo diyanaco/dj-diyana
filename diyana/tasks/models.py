@@ -101,11 +101,11 @@ class DateDetail(ActivityTrackingModel, UuidPKModel):
     # If this isn’t given, Django will use the machine-readable name.
     # In this example, we’ve only defined a human-readable name for DateDetail.due_date.
     # For all other fields in this model, the field’s machine-readable name will suffice as its human-readable name.
-    due_date = models.DateTimeField("due date")
-    start_date = models.DateTimeField("start date")
-    reported_date = models.DateTimeField("reported date")
-    actual_start_date = models.DateTimeField("actual start date")
-    actual_end_date = models.DateTimeField("actual end date")
+    due_date = models.DateTimeField("due date", null=True)
+    start_date = models.DateTimeField("start date", null=True)
+    reported_date = models.DateTimeField("reported date", null=True)
+    actual_start_date = models.DateTimeField("actual start date", null=True)
+    actual_end_date = models.DateTimeField("actual end date", null=True)
 
 
 class Code(ActivityTrackingModel, UuidPKModel):
@@ -215,7 +215,10 @@ class Tag(ActivityTrackingModel, UuidPKModel):
 class GroupTask(ActivityTrackingModel, UuidPKModel):
     name = models.CharField(max_length=100)
     description = models.TextField()
-    phase = models.ForeignKey(Phase, on_delete=models.SET_NULL, null=True)
+    phase = models.ForeignKey(Phase,
+                              on_delete=models.SET_NULL,
+                              null=True,
+                              related_name="groups")
     date_detail = models.OneToOneField(DateDetail,
                                        on_delete=models.SET_NULL,
                                        null=True)
@@ -243,7 +246,8 @@ class Task(ActivityTrackingModel, UuidPKModel):
                               related_name="tasks")
     date_detail = models.OneToOneField(DateDetail,
                                        on_delete=models.SET_NULL,
-                                       null=True)
+                                       null=True,
+                                       related_name="task")
     tags = models.ManyToManyField(Tag, related_name="tag_tasks")
 
 

@@ -14,6 +14,8 @@ from tasks.serializers import (
     PhaseSerializer,
     MilestoneSerializer,
     TagSerializer,
+    TemplateSerializer,
+    DateDetailSerializer,
 )
 from tasks.models import (
     GroupTask,
@@ -26,6 +28,8 @@ from tasks.models import (
     Phase,
     Milestone,
     Tag,
+    Template,
+    DateDetail,
 )
 
 
@@ -55,6 +59,7 @@ class TaskViewSet(ModelViewSet):
     serializer_class = TaskSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+
 class TaskRelationshipView(RelationshipView):
     """
     API endpoint that allows groups to be viewed or edited.
@@ -71,9 +76,11 @@ class SubtaskViewSet(ModelViewSet):
     serializer_class = SubtaskSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+
 class SubtaskRelationshipView(RelationshipView):
     queryset = Subtask.objects.all()
     self_link_view_name = "subtask-relationships"
+
 
 class CodeViewSet(ModelViewSet):
     """
@@ -92,6 +99,7 @@ class PriorityViewSet(ModelViewSet):
     serializer_class = PrioritySerializer
     permission_classes = [permissions.IsAuthenticated]
 
+
 class PhaseViewSet(ModelViewSet):
     """
     API endpoint that allows groups to be viewed or edited.
@@ -100,9 +108,11 @@ class PhaseViewSet(ModelViewSet):
     serializer_class = PhaseSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+
 class PhaseRelationshipView(RelationshipView):
     queryset = Phase.objects.all()
     self_link_view_name = "phase-relationships"
+
 
 class ProjectViewSet(ModelViewSet):
     """
@@ -112,9 +122,11 @@ class ProjectViewSet(ModelViewSet):
     serializer_class = ProjectSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+
 class ProjectRelationshipView(RelationshipView):
     queryset = Project.objects.all()
     self_link_view_name = "project-relationships"
+
 
 class MilestoneViewSet(ModelViewSet):
     """
@@ -123,6 +135,7 @@ class MilestoneViewSet(ModelViewSet):
     queryset = Milestone.objects.all()
     serializer_class = MilestoneSerializer
     permission_classes = [permissions.IsAuthenticated]
+
 
 class MilestoneRelationshipView(RelationshipView):
     queryset = Milestone.objects.all()
@@ -137,9 +150,11 @@ class GroupTaskViewSet(ModelViewSet):
     serializer_class = GroupTaskSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+
 class GroupTaskRelationshipView(RelationshipView):
     queryset = GroupTask.objects.all()
     self_link_view_name = "grouptask-relationships"
+
 
 class TagViewSet(ModelViewSet):
     """
@@ -149,6 +164,35 @@ class TagViewSet(ModelViewSet):
     serializer_class = TagSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+
 class TagRelationshipView(RelationshipView):
     queryset = Tag.objects.all()
     self_link_view_name = "grouptask-relationships"
+
+
+class TemplateViewSet(ModelViewSet):
+    """
+    API endpoint that allows groups to be viewed or edited.
+    """
+    queryset = Template.objects.all()
+    serializer_class = TemplateSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class TemplateRelationshipView(RelationshipView):
+    queryset = Template.objects.all()
+    self_link_view_name = "template-relationships"
+
+
+class DateDetailViewSet(ModelViewSet):
+    """
+    API endpoint that allows groups to be viewed or edited.
+    """
+    queryset = DateDetail.objects.all()
+    serializer_class = DateDetailSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+# class DateDetailRelationshipView(RelationshipView):
+#     queryset = DateDetail.objects.all()
+#     self_link_view_name = "dates-relationships"

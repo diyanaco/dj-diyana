@@ -274,7 +274,7 @@ class DateDetailSerializer(serializers.ModelSerializer):
         queryset=Task.objects,
         required=False,
     )
-    included_serializer = {
+    included_serializers = {
         'task': 'tasks.serializers.TaskSerializer',
     }
 

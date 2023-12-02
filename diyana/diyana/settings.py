@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_json_api',
+    'drf_spectacular',
     'tasks',
 ]
 
@@ -163,7 +164,7 @@ REST_FRAMEWORK = {
     'DEFAULT_METADATA_CLASS':
     'rest_framework_json_api.metadata.JSONAPIMetadata',
     'DEFAULT_SCHEMA_CLASS':
-    'rest_framework_json_api.schemas.openapi.AutoSchema',
+    'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_FILTER_BACKENDS': (
         'rest_framework_json_api.filters.QueryParameterValidationFilter',
         'rest_framework_json_api.filters.OrderingFilter',

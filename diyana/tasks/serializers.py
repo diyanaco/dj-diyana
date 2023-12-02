@@ -74,7 +74,7 @@ class TaskSerializer(serializers.ModelSerializer):
             'priority_value',
             'status',
             'priority',
-            'group',
+            # 'group',
             'subs',
             'tags',
             'dates',
@@ -297,7 +297,6 @@ class DateDetailSerializer(serializers.ModelSerializer):
         model = DateDetail
         fields = [
             'url',
-            'from_type',
             'due_date',
             'start_date',
             'reported_date',
@@ -328,7 +327,7 @@ class MilestoneSerializer(serializers.ModelSerializer):
         fields = [
             'url',
             'name',
-            'phase',
+            # 'phase',
             'date_detail',
         ]
 

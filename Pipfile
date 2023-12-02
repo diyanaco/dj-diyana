@@ -12,6 +12,7 @@ yapf = "*"
 mysqlclient = "*"
 djangorestframework-jsonapi = {extras = ["django-filter"], version = "*"}
 psycopg2 = "*"
+drf-spectacular = "*"
 
 [dev-packages]
 

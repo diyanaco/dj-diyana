@@ -6,7 +6,7 @@ from .date_detail import DateDetail
 from .tag import Tag
 
 
-class TaskList(ActivityTrackingModel, UuidPKModel):
+class Tasklist(ActivityTrackingModel, UuidPKModel):
     name = models.CharField(max_length=100)
     description = models.TextField()
     phase = models.ForeignKey(Phase,

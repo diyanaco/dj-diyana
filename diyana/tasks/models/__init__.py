@@ -6,9 +6,9 @@ from .phase import Phase
 from .priority import Priority
 from .project_template_phase import ProjectTemplatePhase
 from .project import Project
-from .sub_task import SubTask
+from .sub_task import Subtask
 from .tag import Tag
-from .task_list import TaskList
+from .task_list import Tasklist
 from .task import Task
 from .template import Template
 from .phase import Phase

@@ -3,7 +3,7 @@ from .mixins import ActivityTrackingModel, UuidPKModel
 from .user import User
 from .priority import Priority
 from .code import Code
-from .task_list import TaskList
+from .task_list import Tasklist
 from .date_detail import DateDetail
 from .tag import Tag
 
@@ -22,7 +22,7 @@ class Task(ActivityTrackingModel, UuidPKModel):
                                     on_delete=models.SET_NULL,
                                     null=True)
     status = models.ForeignKey(Code, on_delete=models.SET_NULL, null=True)
-    list = models.ForeignKey(TaskList,
+    list = models.ForeignKey(Tasklist,
                               on_delete=models.SET_NULL,
                               null=True,
                               related_name="tasks")

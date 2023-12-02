@@ -18,7 +18,7 @@ from tasks.serializers import (
     DateDetailSerializer,
 )
 from tasks.models import (
-    GroupTask,
+    Tasklist,
     Task,
     Subtask,
     Code,
@@ -146,13 +146,13 @@ class GroupTaskViewSet(ModelViewSet):
     """
     API endpoint that allows groups to be viewed or edited.
     """
-    queryset = GroupTask.objects.all()
+    queryset = Tasklist.objects.all()
     serializer_class = GroupTaskSerializer
     permission_classes = [permissions.IsAuthenticated]
 
 
 class GroupTaskRelationshipView(RelationshipView):
-    queryset = GroupTask.objects.all()
+    queryset = Tasklist.objects.all()
     self_link_view_name = "grouptask-relationships"
 
 

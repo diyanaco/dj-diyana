@@ -1,7 +1,6 @@
 import uuid
 from django.db import models
 
-from .user import User
 
 
 class UuidPKModel(models.Model):
@@ -10,6 +9,7 @@ class UuidPKModel(models.Model):
     class Meta:
         abstract = True
 
+from .user import User
 class ActivityTrackingModel(models.Model):
 
     ACTIVITY_TRACKING_FIELDS = [

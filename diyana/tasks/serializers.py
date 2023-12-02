@@ -4,7 +4,7 @@ from datetime import datetime
 from rest_framework.exceptions import ValidationError
 
 from tasks.models import (
-    GroupTask,
+    Tasklist,
     Task,
     Subtask,
     Code,
@@ -202,7 +202,7 @@ class PhaseSerializer(serializers.ModelSerializer):
     groups = relations.ResourceRelatedField(
         related_link_view_name="phase-related",
         self_link_view_name="phase-relationships",
-        queryset=GroupTask.objects,
+        queryset=Tasklist.objects,
         many=True,
         required=False,
     )
@@ -360,7 +360,7 @@ class GroupTaskSerializer(serializers.ModelSerializer):
     }
 
     class Meta:
-        model = GroupTask
+        model = Tasklist
         fields = [
             'url',
             'name',
@@ -384,7 +384,7 @@ class TagSerializer(serializers.ModelSerializer):
     groups = relations.ResourceRelatedField(
         related_link_view_name="tag-related",
         self_link_view_name="tag-relationships",
-        queryset=GroupTask.objects,
+        queryset=Tasklist.objects,
         many=True,
         required=False,
         source="tag_grouptasks",

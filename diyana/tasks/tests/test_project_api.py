@@ -9,24 +9,29 @@ from tasks.serializers import ProjectSerializer
 
 PROJECT_URL = reverse('tasks:project-list')
 
+
 def create_project(groups, **params):
     """Create and return a sample recipe."""
     defaults = {
         'name': 'Diyana NLP project',
-        'description': "Creating the first LLM with zero to no coding experience",
+        'description':
+        "Creating the first LLM with zero to no coding experience",
     }
     defaults.update(params)
 
     project = Project.objects.create(groups=groups, **defaults)
     return project
 
+
 def create_user(**params):
     """Create and return a new user."""
     return get_user_model().objects.create_user(**params)
 
+
 def create_group(**params):
     """Create and return a new user."""
     return Group.objects.create(**params)
+
 
 class PublicProjectAPITests(TestCase):
     """Test unauthenticated API requests."""
@@ -64,16 +69,15 @@ class PrivateProjectApiTests(TestCase):
                 "id": None,
                 "attributes": {
                     "name": "TESTPROJECT",
-                    "description": "This is a test a project"
+                    "description": "This is a test a project",
+                    "code": "TESTPROJECT_CODE"
                 },
                 "relationships": {
                     "groups": {
-                        "data": [
-                            {
-                                "type": "Group",
-                                "id": "1"
-                            }
-                        ]
+                        "data": [{
+                            "type": "Group",
+                            "id": self.group.id
+                        }]
                     }
                 }
             }

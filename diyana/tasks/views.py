@@ -1,7 +1,7 @@
 from django.contrib.auth.models import Group
-from rest_framework import permissions
+from rest_framework.permissions import IsAuthenticated
 from rest_framework_json_api.views import RelationshipView, ModelViewSet
-
+from rest_framework.authentication import TokenAuthentication
 from tasks.serializers import (
     GroupTaskSerializer,
     TaskSerializer,
@@ -39,7 +39,7 @@ class UserViewSet(ModelViewSet):
     """
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
 
 class GroupViewSet(ModelViewSet):
@@ -48,7 +48,7 @@ class GroupViewSet(ModelViewSet):
     """
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
 
 class TaskViewSet(ModelViewSet):
@@ -57,7 +57,7 @@ class TaskViewSet(ModelViewSet):
     """
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
 
 class TaskRelationshipView(RelationshipView):
@@ -74,7 +74,7 @@ class SubtaskViewSet(ModelViewSet):
     """
     queryset = Subtask.objects.all()
     serializer_class = SubtaskSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
 
 class SubtaskRelationshipView(RelationshipView):
@@ -88,7 +88,7 @@ class CodeViewSet(ModelViewSet):
     """
     queryset = Code.objects.all()
     serializer_class = CodeSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
 
 class PriorityViewSet(ModelViewSet):
@@ -97,7 +97,7 @@ class PriorityViewSet(ModelViewSet):
     """
     queryset = Priority.objects.all()
     serializer_class = PrioritySerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
 
 class PhaseViewSet(ModelViewSet):
@@ -106,7 +106,7 @@ class PhaseViewSet(ModelViewSet):
     """
     queryset = Phase.objects.all()
     serializer_class = PhaseSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
 
 class PhaseRelationshipView(RelationshipView):
@@ -120,7 +120,8 @@ class ProjectViewSet(ModelViewSet):
     """
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes =  [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
 
 
 class ProjectRelationshipView(RelationshipView):
@@ -134,7 +135,7 @@ class MilestoneViewSet(ModelViewSet):
     """
     queryset = Milestone.objects.all()
     serializer_class = MilestoneSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
 
 class MilestoneRelationshipView(RelationshipView):
@@ -148,7 +149,7 @@ class GroupTaskViewSet(ModelViewSet):
     """
     queryset = Tasklist.objects.all()
     serializer_class = GroupTaskSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
 
 class GroupTaskRelationshipView(RelationshipView):
@@ -162,7 +163,7 @@ class TagViewSet(ModelViewSet):
     """
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
 
 class TagRelationshipView(RelationshipView):
@@ -176,7 +177,7 @@ class TemplateViewSet(ModelViewSet):
     """
     queryset = Template.objects.all()
     serializer_class = TemplateSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
 
 class TemplateRelationshipView(RelationshipView):
@@ -190,7 +191,7 @@ class DateDetailViewSet(ModelViewSet):
     """
     queryset = DateDetail.objects.all()
     serializer_class = DateDetailSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
 
 # class DateDetailRelationshipView(RelationshipView):

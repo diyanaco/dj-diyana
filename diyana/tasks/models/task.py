@@ -25,7 +25,7 @@ class Task(ActivityTrackingModel, UuidPKModel):
     list = models.ForeignKey(Tasklist,
                               on_delete=models.SET_NULL,
                               null=True,
-                              related_name="tasks")
+                              related_name="list_tasks")
     date_detail = models.OneToOneField(DateDetail,
                                        on_delete=models.SET_NULL,
                                        null=True,

@@ -13,5 +13,5 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls',
                               namespace='rest_framework')),
     path('api/user/', include('user.urls')),
-    path('api/tasks/', include('tasks.urls')),
+    path('api/v1/', include('tasks.urls')),
 ]

@@ -42,15 +42,6 @@ class UserViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated]
 
 
-class GroupViewSet(ModelViewSet):
-    """
-    API endpoint that allows groups to be viewed or edited.
-    """
-    queryset = Group.objects.all()
-    serializer_class = GroupSerializer
-    permission_classes = [IsAuthenticated]
-
-
 class TaskViewSet(ModelViewSet):
     """
     API endpoint that allows groups to be viewed or edited.
@@ -120,13 +111,28 @@ class ProjectViewSet(ModelViewSet):
     """
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
-    authentication_classes =  [TokenAuthentication]
+    # authentication_classes =  [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
 
 class ProjectRelationshipView(RelationshipView):
     queryset = Project.objects.all()
     self_link_view_name = "project-relationships"
+
+
+class GroupViewSet(ModelViewSet):
+    """
+    API endpoint that allows groups to be viewed or edited.
+    """
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer
+    # authentication_classes =  [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
+class GroupRelationshipView(RelationshipView):
+    queryset = Group.objects.all()
+    self_link_view_name = "group-relationships"
 
 
 class MilestoneViewSet(ModelViewSet):

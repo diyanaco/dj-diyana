@@ -11,6 +11,6 @@ class TasklistViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated]
 
 
-class GroupTaskRelationshipView(RelationshipView):
+class TasklistRelationshipView(RelationshipView):
     queryset = Tasklist.objects.all()
-    self_link_view_name = "grouptask-relationships"
+    self_link_view_name = "tasklist-relationships"

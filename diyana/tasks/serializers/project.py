@@ -3,6 +3,7 @@ from rest_framework_json_api import relations, serializers
 from rest_framework.exceptions import ValidationError
 from tasks.models import Project
 
+
 class ProjectSerializer(serializers.ModelSerializer):
     groups = relations.ResourceRelatedField(
         related_link_view_name="project-related",
@@ -22,6 +23,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             'name',
             'description',
             'groups',
+            'url'
         ]
 
     def create(self, validated_data):

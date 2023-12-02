@@ -6,15 +6,14 @@ from tasks import views
 app_name = 'tasks'
 
 router = routers.DefaultRouter(trailing_slash=False)
-router.register(r'users', views.UserViewSet)
 router.register(r'groups', views.GroupViewSet)
 router.register(r'projects', views.ProjectViewSet)
 router.register(r'templates', views.TemplateViewSet)
 router.register(r'phases', views.PhaseViewSet)
-router.register(r'grouptasks', views.GroupTaskViewSet)
+router.register(r'tasklist', views.TasklistViewSet)
 router.register(r'tasks', views.TaskViewSet)
 router.register(r'subtasks', views.SubtaskViewSet)
-# router.register(r'codes', views.CodeViewSet)
+router.register(r'codes', views.CodeViewSet)
 router.register(r'priorities', views.PriorityViewSet)
 router.register(r'milestones', views.MilestoneViewSet)
 router.register(r'tags', views.TagViewSet)
@@ -109,16 +108,16 @@ urlpatterns.append(
 
 urlpatterns.append(
     re_path(
-        r"^grouptasks/(?P<pk>[^/.]+)/(?P<related_field>[a-z_]+(?:-[a-z_]+)*)$",
-        views.GroupTaskViewSet.as_view({"get": "retrieve_related"}),
-        name="grouptask-related",
+        r"^tasklist/(?P<pk>[^/.]+)/(?P<related_field>[a-z_]+(?:-[a-z_]+)*)$",
+        views.TasklistViewSet.as_view({"get": "retrieve_related"}),
+        name="tasklist-related",
     ))
 
 urlpatterns.append(
     re_path(
-        r"^grouptasks/(?P<pk>[^/.]+)/relationships/(?P<related_field>[a-z_]+(?:-[a-z_]+)*)$",
-        views.GroupTaskRelationshipView.as_view(),
-        name="grouptask-relationships",
+        r"^tasklist/(?P<pk>[^/.]+)/relationships/(?P<related_field>[a-z_]+(?:-[a-z_]+)*)$",
+        views.TasklistRelationshipView.as_view(),
+        name="tasklist-relationships",
     ))
 
 urlpatterns.append(

@@ -53,10 +53,30 @@ class PrivateProjectApiTests(TestCase):
 
     def test_create_project(self):
         """Test creating a new project."""
+        # payload = {
+        #     'name': 'Test Project',
+        #     'description': 'Test Project Description',
+        #     'groups': self.group.id,
+        # }
         payload = {
-            'name': 'Test Project',
-            'description': 'Test Project Description',
-            'groups': self.group.id,
+            "data": {
+                "type": "Project",
+                "id": None,
+                "attributes": {
+                    "name": "TESTPROJECT",
+                    "description": "This is a test a project"
+                },
+                "relationships": {
+                    "groups": {
+                        "data": [
+                            {
+                                "type": "Group",
+                                "id": "1"
+                            }
+                        ]
+                    }
+                }
+            }
         }
         res = self.client.post(PROJECT_URL, payload)
 

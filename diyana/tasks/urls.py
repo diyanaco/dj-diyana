@@ -3,8 +3,6 @@ from django.urls.conf import re_path
 from rest_framework import routers
 from tasks import views
 
-app_name = 'tasks'
-
 router = routers.DefaultRouter(trailing_slash=False)
 router.register(r'groups', views.GroupViewSet)
 router.register(r'projects', views.ProjectViewSet)
@@ -64,6 +62,7 @@ urlpatterns.append(
         views.ProjectRelationshipView.as_view(),
         name="project-relationships",
     ))
+
 urlpatterns.append(
     re_path(
         r"^groups/(?P<pk>[^/.]+)/(?P<related_field>[a-z_]+(?:-[a-z_]+)*)$",

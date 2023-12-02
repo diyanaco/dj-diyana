@@ -19,17 +19,13 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Project
-        fields = [
-            'name',
-            'description',
-            'groups',
-            'url'
-        ]
+        fields = ['id', 'name', 'code', 'description', 'groups', 'url']
+        # lookup_field = 'id'
 
     def create(self, validated_data):
-        name: str = validated_data['name']
+        code: str = validated_data['code']
         # Only accept single word project names
-        if ' ' in name:
-            raise ValidationError("Project name cannot contain spaces")
-        validated_data['code'] = name.upper()
+        if ' ' in code:
+            raise ValidationError("Project code cannot contain spaces")
+        validated_data['code'] = code.upper()
         return super().create(validated_data)

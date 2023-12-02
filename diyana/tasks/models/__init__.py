@@ -12,4 +12,3 @@ from .task import Task
 from .template import Template
 from .phase import Phase
 from .user import User
-from .task_template import TaskTemplate

@@ -1,9 +1,9 @@
 from django.db import models
 
 from .mixins import ActivityTrackingModel, UuidPKModel
-from .phase import Phase
 from .date_detail import DateDetail
 from .tag import Tag
+from .phase import Phase
 
 
 class Tasklist(ActivityTrackingModel, UuidPKModel):
@@ -12,8 +12,8 @@ class Tasklist(ActivityTrackingModel, UuidPKModel):
     phase = models.ForeignKey(Phase,
                               on_delete=models.SET_NULL,
                               null=True,
-                              related_name="groups")
+                              related_name="lists")
     date_detail = models.OneToOneField(DateDetail,
                                        on_delete=models.SET_NULL,
                                        null=True)
-    tags = models.ManyToManyField(Tag, related_name="tag_grouptasks")
+    tags = models.ManyToManyField(Tag, related_name="lists")

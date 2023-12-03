@@ -20,7 +20,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = ['id', 'name', 'code', 'description', 'groups', 'url']
-        # lookup_field = 'id'
+        read_only_fields = ['id', 'url']
 
     def create(self, validated_data):
         code: str = validated_data['code']

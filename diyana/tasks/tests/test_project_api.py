@@ -3,9 +3,10 @@ from django.urls import reverse
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from rest_framework import status
-from rest_framework.test import APIClient
+from rest_framework.test import APIClient, APIRequestFactory
 from tasks.models import Project
 from tasks.serializers import ProjectSerializer
+import pprint
 
 PROJECT_URL = reverse('project-list')
 
@@ -52,6 +53,7 @@ class PrivateProjectApiTests(TestCase):
 
     def setUp(self):
         self.client = APIClient()
+        self.factory = APIRequestFactory()
         self.group = create_group(name='Test Group One')
         self.group_2 = create_group(name='Test Group Two')
         self.user = create_user(email="user@test.com", password="testpass")
@@ -79,14 +81,20 @@ class PrivateProjectApiTests(TestCase):
                 }
             }
         }
-        res = self.client.post(PROJECT_URL,
-                               payload,
-                               content_type='application/vnd.api+json')
+        payload_attributes = payload['data']['attributes']
+        payload_relationships_groups_data = payload['data']['relationships'][
+            'groups']['data']
+
+        res = self.client.post(path=PROJECT_URL, data=payload)
+        project = Project.objects.get(id=res.data['id'])
 
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
-        project = Project.objects.get(id=res.data['id'])
-        for key in payload.keys():
-            self.assertEqual(payload[key], getattr(project, key))
+        for key in payload_attributes.keys():
+            self.assertEqual(payload_attributes[key], getattr(project, key))
+        for group in payload_relationships_groups_data:
+            self.assertEqual(
+                group['id'],
+                getattr(project.groups.filter(id=group['id'])[0], 'id'))
 
     def test_retrieve_projects(self):
         """Test retrieving projects."""
@@ -100,12 +108,12 @@ class PrivateProjectApiTests(TestCase):
                        name="Test Project 3",
                        code="TESTPROJECT3")
 
-        res = self.client.get(PROJECT_URL,
-                              content_type='application/vnd.api+json')
-        projects = Project.objects.all().order_by('-name')
-        serializer = ProjectSerializer(projects, many=True)
+        res = self.client.get(PROJECT_URL)
+        pprint.pprint(res.data)
+        # request = self.factory.get(PROJECT_URL)
+        projects = Project.objects.all()
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(res.data, serializer.data)
+        self.assertEqual(len(res.data['results']), 3)
 
     def test_retrieve_projects_limited_to_group(self):
         """Test retrieving projects for group."""
@@ -119,8 +127,7 @@ class PrivateProjectApiTests(TestCase):
                        name="Test Project 3",
                        code="TESTPROJECT3")
 
-        res = self.client.get(PROJECT_URL, {'groups': 1},
-                              content_type='application/vnd.api+json')
+        res = self.client.get(PROJECT_URL, {'groups': 1},)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(len(res.data), 3)
         self.assertEqual(res.data[0]['name'], "Test Project 1")

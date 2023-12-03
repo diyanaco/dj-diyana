@@ -1,5 +1,6 @@
 from rest_framework_json_api.views import RelationshipView, ModelViewSet
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
 from tasks.models import Project
 from tasks.serializers import ProjectSerializer
 
@@ -10,7 +11,7 @@ class ProjectViewSet(ModelViewSet):
     """
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
-    # authentication_classes =  [TokenAuthentication]
+    authentication_classes =  [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
 

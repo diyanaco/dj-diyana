@@ -13,6 +13,8 @@ mysqlclient = "*"
 djangorestframework-jsonapi = {extras = ["django-filter"], version = "*"}
 psycopg2 = "*"
 drf-spectacular = "*"
+pytest = "*"
+pytest-django = "*"
 
 [dev-packages]
 
@@ -23,3 +25,5 @@ python_version = "3.10"
 start = "python manage.py runserver"
 makemigrations = "python manage.py makemigrations tasks"
 migrate = "python manage.py migrate tasks"
+test = "python diyana/manage.py test tasks"
+pytest = "pytest"

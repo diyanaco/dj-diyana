@@ -1,4 +1,4 @@
-# from django.test import TestCase
+import json
 from rest_framework.test import APITestCase
 from django.urls import reverse
 from django.contrib.auth import get_user_model
@@ -6,9 +6,6 @@ from django.contrib.auth.models import Group
 from rest_framework import status
 from rest_framework.test import APIClient, APIRequestFactory
 from tasks.models import Project
-from tasks.serializers import ProjectSerializer
-import pprint
-import json
 
 PROJECT_LIST_URL = reverse('project-list')
 
@@ -158,7 +155,7 @@ class PrivateProjectApiTests(APITestCase):
 
         res = self.client.get(GROUP_PROJECT_RELATED_URL)
         data = json.loads(res.content)['data']
-        pprint.pprint(data)
+
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(len(data), 2)
         self.assertEqual(data[0]['attributes']['name'], "Test Project 1")

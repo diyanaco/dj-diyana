@@ -10,8 +10,11 @@ from tasks.serializers import ProjectSerializer
 import pprint
 import json
 
-PROJECT_URL = reverse('project-list')
+PROJECT_LIST_URL = reverse('project-list')
 
+def generate_project_detailed_url(pk):
+    """Generate detailed url."""
+    return reverse('project-detail', kwargs={'pk': pk})
 
 def generate_group_related_url(pk, related_field):
     """Generate relationship url."""
@@ -54,7 +57,7 @@ class PublicProjectAPITests(APITestCase):
 
     def test_auth_required(self):
         """Test auth is required to call API."""
-        res = self.client.get(PROJECT_URL)
+        res = self.client.get(PROJECT_LIST_URL)
 
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
@@ -96,7 +99,7 @@ class PrivateProjectApiTests(APITestCase):
         payload_relationships_groups_data = payload['data']['relationships'][
             'groups']['data']
 
-        res = self.client.post(path=PROJECT_URL, data=payload)
+        res = self.client.post(path=PROJECT_LIST_URL, data=payload)
         project = Project.objects.get(id=res.data['id'])
 
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
@@ -106,6 +109,19 @@ class PrivateProjectApiTests(APITestCase):
             self.assertEqual(
                 group['id'],
                 getattr(project.groups.filter(id=group['id'])[0], 'id'))
+
+    def test_retrieve_project(self):
+        """Test retrieving a project."""
+        project = create_project(groups=self.group,
+                                 name="Test Project",
+                                 code="TESTPROJECT")
+        PROJECT_DETAIL_URL = generate_project_detailed_url(project.id)
+
+        res = self.client.get(PROJECT_DETAIL_URL)
+        data = json.loads(res.content)['data']
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(data['attributes']['name'], "Test Project")
 
     def test_retrieve_projects(self):
         """Test retrieving projects."""
@@ -119,7 +135,7 @@ class PrivateProjectApiTests(APITestCase):
                        name="Test Project 3",
                        code="TESTPROJECT3")
 
-        res = self.client.get(PROJECT_URL)
+        res = self.client.get(PROJECT_LIST_URL)
         data = json.loads(res.content)['data']
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
@@ -128,8 +144,8 @@ class PrivateProjectApiTests(APITestCase):
     def test_retrieve_projects_limited_to_group(self):
         """Test retrieving projects for group."""
         create_project(groups=self.group,
-                                  name="Test Project 1",
-                                  code="TESTPROJECT1")
+                       name="Test Project 1",
+                       code="TESTPROJECT1")
         create_project(groups=self.group,
                        name="Test Project 2",
                        code="TESTPROJECT2")

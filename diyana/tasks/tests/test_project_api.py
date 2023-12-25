@@ -69,7 +69,7 @@ class PrivateProjectApiTests(APITestCase):
         self.group_2 = create_group(name='Test Group Two')
         self.user = create_user(email="user@test.com", password="testpass")
         self.user.groups.set([self.group])
-        # self.client.login(username=self.user.email, password="testpass")
+        self.client.force_authenticate(self.user)
 
     def test_create_project(self):
         """Test creating a new project."""

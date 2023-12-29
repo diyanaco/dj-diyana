@@ -5,7 +5,7 @@ from .mixins import ActivityTrackingModel, UuidPKModel
 
 
 class Project(ActivityTrackingModel, UuidPKModel):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, null=True)
     code = models.CharField(max_length=100, unique=True)
-    description = models.TextField()
+    description = models.TextField(null=True)
     groups = models.ManyToManyField(Group, related_name="projects")

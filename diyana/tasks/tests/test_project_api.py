@@ -8,19 +8,22 @@ from django.contrib.auth.models import Group
 from rest_framework import status
 from rest_framework.test import APIClient, APIRequestFactory
 from tasks.models import Project
+from tasks.constants.error import ValidationErrorConstants
 
 PROJECT_LIST_URL = reverse('project-list')
+
 
 def generate_project_detailed_url(pk):
     """Generate detailed url."""
     return reverse('project-detail', kwargs={'pk': pk})
 
-def generate_group_related_url(pk, related_field):
+
+def generate_group_related_url(pk):
     """Generate relationship url."""
     return reverse('group-related',
                    kwargs={
                        'pk': pk,
-                       'related_field': related_field
+                       'related_field': 'projects'
                    })
 
 
@@ -29,7 +32,7 @@ def create_project(groups, **params):
     defaults = {
         'name': 'Diyana NLP project',
         'description':
-        "Creating the first LLM with zero to no coding experience",
+            "Creating the first LLM with zero to no coding experience",
     }
     defaults.update(params)
 
@@ -109,17 +112,60 @@ class PrivateProjectApiTests(APITestCase):
                 group['id'],
                 getattr(project.groups.filter(id=group['id'])[0], 'id'))
 
-    def test_create_project_without_required_fields(self):
-        "Test if create project without required fields will throw an error"
+    def test_create_project_without_code(self):
+        "Test if create project without code will throw an error"
 
         payload = {
             "data": {
                 "type": "Project",
                 "id": None,
+                "relationships": {
+                    "groups": {
+                        "data": [{
+                            "type": "Group",
+                            "id": self.group.id
+                        }]
+                    }
+                }
+            },
+        }
+        res = self.client.post(path=PROJECT_LIST_URL, data=payload)
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+        expected = {'errors': [{'code': 'required',
+                                'detail': ValidationErrorConstants.PROJECT_REQUIRED_FIELDS,
+                                'source': {'pointer': '/data/attributes/code'},
+                                'status': '400'}]}
+        expected_errors = expected['errors']
+
+        self.assertEqual(len(expected_errors), 1)
+        self.assertEqual(json.loads(res.content)['errors'][0], expected_errors[0])
+
+    def test_create_project_without_group(self):
+        "Test if create project without group will throw an error"
+
+        payload = {
+            "data": {
+                "type": "Project",
+                "id": None,
+                "attributes": {
+                    "name": "TESTPROJECT",
+                    "description": "This is a test a project",
+                    "code": "TESTPROJECT_CODE"
+                },
             }
         }
         res = self.client.post(path=PROJECT_LIST_URL, data=payload)
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+        expected = {'errors': [{'code': 'required',
+                                'detail': ValidationErrorConstants.PROJECT_REQUIRED_FIELDS,
+                                'source': {'pointer': '/data/relationships/groups'},
+                                'status': '400'}]}
+        expected_errors = expected['errors']
+
+        self.assertEqual(len(expected_errors), 1)
+        self.assertEqual(json.loads(res.content)['errors'][0], expected_errors[0])
 
     def test_create_project_code_with_space(self):
         "Test Project Code with space throws error"
@@ -143,9 +189,16 @@ class PrivateProjectApiTests(APITestCase):
                 }
             }
         }
+        expected = {'errors': [{'code': 'invalid',
+                                'detail': ValidationErrorConstants.PROJECT_CODE_CANT_CONTAIN_SPACES,
+                                'source': {'pointer': '/data'},
+                                'status': '400'}]}
+        expected_errors = expected['errors']
 
         res = self.client.post(path=PROJECT_LIST_URL, data=payload)
+
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(json.loads(res.content)['errors'][0], expected_errors[0])
 
     def test_retrieve_project(self):
         """Test retrieving a project."""
@@ -191,7 +244,7 @@ class PrivateProjectApiTests(APITestCase):
                        code="TESTPROJECT3")
 
         GROUP_PROJECT_RELATED_URL = generate_group_related_url(
-            self.group.id, 'projects')
+            self.group.id)
 
         res = self.client.get(GROUP_PROJECT_RELATED_URL)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
@@ -199,5 +252,3 @@ class PrivateProjectApiTests(APITestCase):
         data = json.loads(res.content)['data']
         self.assertEqual(len(data), 2)
         self.assertEqual(data[0]['attributes']['name'], "Test Project 1")
-
-
